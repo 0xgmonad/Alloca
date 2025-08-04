@@ -3,12 +3,45 @@
 <head>
     <link rel="preload" href="images/background.jpg" as="image">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta viewport tối ưu cho mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="SPACE TO JUMP">
     <title>ALLOCA</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preload" href="images/character.png" as="image">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS inline cho các element mobile */
+        #mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+        #jump-btn, .dir-btn {
+            padding: 15px 25px;
+            font-size: 18px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            touch-action: manipulation;
+        }
+        @media screen and (max-width: 768px) {
+            #instructions {
+                display: none; /* Ẩn hướng dẫn bàn phím trên mobile */
+            }
+            #mobile-controls {
+                display: flex;
+            }
+            #game-title, #subtitle {
+                font-size: 1.5rem; /* Giảm kích thước chữ trên mobile */
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="game-container">
@@ -19,7 +52,17 @@
         <h1 id="game-title">ALLOCA</h1>
         <p id="subtitle">"I LOVE SUBIE"</p>
         
-        <canvas id="game-canvas" width="600" height="800"></canvas>
+        <!-- Canvas sẽ được resize bằng JS -->
+        <canvas id="game-canvas"></canvas>
+        
+        <!-- Điều khiển cho mobile -->
+        <div id="mobile-controls">
+            <div id="d-pad">
+                <button class="dir-btn" id="left-btn">←</button>
+                <button class="dir-btn" id="right-btn">→</button>
+            </div>
+            <button id="jump-btn">JUMP</button>
+        </div>
         
         <div id="controls">
             <button id="restart-btn" class="game-btn">Start Again</button>
@@ -38,5 +81,33 @@
     </div>
 
     <script src="game.js"></script>
+    <script>
+        // Resize canvas cho phù hợp với thiết bị
+        function resizeCanvas() {
+            const canvas = document.getElementById('game-canvas');
+            const container = document.getElementById('game-container');
+            
+            // Giữ tỉ lệ 3:4 nhưng fit với màn hình
+            const maxWidth = Math.min(window.innerWidth * 0.95, 600);
+            const maxHeight = Math.min(window.innerHeight * 0.7, 800);
+            
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
+            
+            // Cập nhật lại game nếu cần
+            if (window.game) {
+                window.game.resize();
+            }
+        }
+
+        // Xử lý sự kiện resize
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', resizeCanvas);
+        
+        // Phát hiện thiết bị mobile
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+    </script>
 </body>
 </html>

@@ -1,27 +1,34 @@
+// ==================== PHẦN THÊM MỚI ĐẦU FILE ====================
+// Kiểm tra thiết bị mobile
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let canvasScale = 1; // Tỉ lệ scale canvas cho mobile
 
-// Thêm phần tải logo
+// Biến điều khiển cảm ứng
+let touchStartX = 0;
+let touchStartY = 0;
+
+// ==================== PHẦN TẢI HÌNH ẢNH (GIỮ NGUYÊN) ====================
 const logoImg = new Image();
-logoImg.src = 'images/logo.png'; // Đường dẫn đến ảnh logo
+logoImg.src = 'images/logo.png';
 let isLogoLoaded = false;
 logoImg.onload = () => {
     isLogoLoaded = true;
     console.log('Logo loaded');
 };
 logoImg.onerror = () => console.error('Error loading logo');
-// Thêm code tải background
-const bgImage = new Image();
-bgImage.src = 'images/background.jpg'; // Đường dẫn đến ảnh của bạn
-let isBgLoaded = false;
 
+const bgImage = new Image();
+bgImage.src = 'images/background.jpg';
+let isBgLoaded = false;
 bgImage.onload = function() {
     isBgLoaded = true;
     console.log('Ảnh background đã tải xong!');
 };
-
 bgImage.onerror = function() {
     console.error('Không thể tải ảnh background!');
 };
-// ========== KHAI BÁO BIẾN ==========
+
+// ==================== PHẦN KHAI BÁO BIẾN (CẬP NHẬT) ====================
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
@@ -31,10 +38,14 @@ const pauseBtn = document.getElementById('pause-btn');
 const playAgainBtn = document.getElementById('play-again-btn');
 const gameOverScreen = document.getElementById('game-over');
 
+// Thêm biến cho nút điều khiển mobile
+const jumpBtn = document.getElementById('jump-btn');
+const leftBtn = document.getElementById('left-btn');
+const rightBtn = document.getElementById('right-btn');
 
 // Tải ảnh nhân vật
 const characterImg = new Image();
-characterImg.src = 'images/character.png'; // Đường dẫn tương đối
+characterImg.src = 'images/character.png';
 let isImageLoaded = false;
 
 // Biến game
@@ -45,7 +56,7 @@ let animationId;
 const gravity = 0.5;
 const obstacleSpeedBase = 3;
 
-// ========== NHÂN VẬT ==========
+// ==================== PHẦN NHÂN VẬT (CẬP NHẬT) ====================
 const player = {
     x: 100,
     y: canvas.height / 2,
@@ -54,10 +65,13 @@ const player = {
     jumpForce: -10,
     color: '#90e0ef',
     showWaterEffect: true,
+    moveLeft: false, // Thêm mới cho điều khiển mobile
+    moveRight: false, // Thêm mới cho điều khiển mobile
+    speedX: 0, // Thêm mới cho di chuyển ngang
+    maxSpeedX: 4, // Thêm mới cho di chuyển ngang
     
     draw() {
         if (!isImageLoaded) {
-            // Fallback: vẽ hình tròn nếu ảnh chưa tải
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = this.color;
@@ -66,7 +80,6 @@ const player = {
             return;
         }
 
-        // Vẽ ảnh nhân vật
         const imgSize = this.radius * 2.5;
         ctx.save();
         ctx.imageSmoothingEnabled = true;
@@ -85,6 +98,13 @@ const player = {
         this.velocity += gravity;
         this.y += this.velocity;
         
+        // Di chuyển ngang (phần thêm mới cho mobile)
+        if (this.moveLeft) this.speedX = -this.maxSpeedX;
+        else if (this.moveRight) this.speedX = this.maxSpeedX;
+        else this.speedX = 0;
+        
+        this.x += this.speedX;
+        
         // Giới hạn màn hình
         if (this.y + this.radius > canvas.height) {
             this.y = canvas.height - this.radius;
@@ -94,6 +114,10 @@ const player = {
             this.y = this.radius;
             this.velocity = 0;
         }
+        
+        // Giới hạn màn hình ngang (phần thêm mới)
+        if (this.x - this.radius < 0) this.x = this.radius;
+        if (this.x + this.radius > canvas.width) this.x = canvas.width - this.radius;
     },
     
     jump() {
@@ -103,14 +127,14 @@ const player = {
     }
 };
 
-// ========== CHƯỚNG NGẠI VẬT ==========
+// ==================== PHẦN CHƯỚNG NGẠI VẬT (GIỮ NGUYÊN) ====================
 const obstacles = {
     list: [],
     width: 80,
     gap: 250,
     minGapPosition: 50,
     speed: obstacleSpeedBase,
-    logoSize: 80, // Kích thước logo (30-40% của gap)
+    logoSize: 80,
     
     create() {
         const gapPosition = Math.random() * (canvas.height - this.gap - 100) + this.minGapPosition;
@@ -118,30 +142,25 @@ const obstacles = {
             x: canvas.width,
             y: gapPosition,
             passed: false,
-            logoVisible: true // Thêm trạng thái hiển thị logo
+            logoVisible: true
         });
     },
     
     draw() {
         ctx.fillStyle = '#9900ff';
         this.list.forEach(obstacle => {
-            // Ống trên
             ctx.fillRect(obstacle.x, 0, this.width, obstacle.y);
-            // Ống dưới
             ctx.fillRect(obstacle.x, obstacle.y + this.gap, this.width, canvas.height);
             
-            // Hiệu ứng viền
             ctx.fillStyle = 'rgba(40, 214, 98, 0.7)';
             ctx.fillRect(obstacle.x - 5, obstacle.y - 10, this.width + 10, 20);
             ctx.fillRect(obstacle.x - 5, obstacle.y + this.gap - 10, this.width + 10, 20);
             ctx.fillStyle = '#9900ff';
             
-            // Vẽ logo nếu chưa bị đi qua và ảnh đã tải
             if (obstacle.logoVisible && isLogoLoaded) {
                 const logoX = obstacle.x + this.width/2 - this.logoSize/2;
                 const logoY = obstacle.y + this.gap/2 - this.logoSize/2;
                 
-                // Vẽ logo với bo tròn
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(logoX + this.logoSize/2, logoY + this.logoSize/2, 
@@ -156,27 +175,23 @@ const obstacles = {
     },
     
     update() {
-        // Di chuyển và kiểm tra
         for (let i = this.list.length - 1; i >= 0; i--) {
             const obstacle = this.list[i];
             obstacle.x -= this.speed;
             
-            // Tính điểm và ẩn logo khi đi qua
             if (!obstacle.passed && obstacle.x + this.width < player.x) {
                 obstacle.passed = true;
-                obstacle.logoVisible = false; // Ẩn logo
+                obstacle.logoVisible = false;
                 score++;
                 scoreElement.textContent = score;
                 this.speed = obstacleSpeedBase + Math.floor(score / 5) * 0.5;
             }
             
-            // Kiểm tra va chạm
             if (this.checkCollision(obstacle)) {
                 gameOver();
                 break;
             }
             
-            // Xóa ống đã ra khỏi màn hình
             if (obstacle.x + this.width < 0) {
                 this.list.splice(i, 1);
             }
@@ -193,33 +208,98 @@ const obstacles = {
     }
 };
 
-// ========== HỆ THỐNG GAME ==========
+// ==================== PHẦN HỆ THỐNG GAME (CẬP NHẬT) ====================
 function initGame() {
-    // Tải ảnh
-    characterImg.onload = () => {
-        isImageLoaded = true;
-        console.log('Ảnh nhân vật đã tải xong');
-    };
+    // Thêm sự kiện cho mobile (phần thêm mới)
+    if (isMobile) {
+        jumpBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            player.jump();
+        });
+        
+        leftBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            player.moveLeft = true;
+        });
+        
+        rightBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            player.moveRight = true;
+        });
+        
+        leftBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            player.moveLeft = false;
+        });
+        
+        rightBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            player.moveRight = false;
+        });
+        
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            const dy = touchEndY - touchStartY;
+            
+            if (dy < -30) { // Swipe lên để nhảy
+                player.jump();
+            }
+        }, { passive: false });
+    }
     
-    characterImg.onerror = () => {
-        console.error('Không tải được ảnh nhân vật');
-    };
-    
-    
-    // Sự kiện
+    // Sự kiện bàn phím (giữ nguyên)
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Space') player.jump();
     });
     
+    // Các sự kiện khác (giữ nguyên)
     restartBtn.addEventListener('click', startGame);
     pauseBtn.addEventListener('click', togglePause);
     playAgainBtn.addEventListener('click', startGame);
     
-    // Màn hình bắt đầu
+    // Khởi tạo kích thước canvas (phần thêm mới)
+    resizeCanvas();
     showStartScreen();
 }
 
+// ==================== PHẦN THÊM MỚI: RESIZE CANVAS ====================
+function resizeCanvas() {
+    const maxWidth = Math.min(window.innerWidth * 0.95, 600);
+    const maxHeight = Math.min(window.innerHeight * 0.7, 800);
+    
+    canvas.width = maxWidth;
+    canvas.height = maxHeight;
+    canvasScale = maxWidth / 600;
+    
+    // Điều chỉnh cho mobile
+    if (isMobile) {
+        player.radius = 30 * canvasScale;
+        player.jumpForce = -10 * canvasScale;
+        player.maxSpeedX = 4 * canvasScale;
+    }
+    
+    player.x = 100 * canvasScale;
+    player.y = canvas.height / 2;
+}
 
+// Thêm sự kiện resize window (phần thêm mới)
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    if (gameRunning) {
+        obstacles.list.forEach(obstacle => {
+            obstacle.y = obstacle.y / canvas.height * canvas.height;
+        });
+    }
+});
+
+// ==================== CÁC HÀM GAME LOOP (GIỮ NGUYÊN) ====================
 function gameLoop() {
     if (!gameRunning || gamePaused) return;
     
@@ -231,7 +311,6 @@ function gameLoop() {
     obstacles.update();
     obstacles.draw();
     
-    // Tạo chướng ngại vật mới
     if (animationId % 100 === 0) {
         obstacles.create();
     }
@@ -245,6 +324,8 @@ function startGame() {
     obstacles.speed = obstacleSpeedBase;
     player.y = canvas.height / 2;
     player.velocity = 0;
+    player.moveLeft = false;
+    player.moveRight = false;
     
     scoreElement.textContent = score;
     gameOverScreen.style.display = 'none';
@@ -276,30 +357,24 @@ function togglePause() {
 function showStartScreen() {
     gameOverScreen.style.display = 'flex';
     document.querySelector('#game-over h2').textContent = "";
-    finalScoreElement.textContent = "SPACE to JUMP";
+    finalScoreElement.textContent = isMobile ? "TAP to JUMP" : "SPACE to JUMP";
     playAgainBtn.textContent = "Start Game";
 }
 
 function drawBackground() {
-    // Vẽ background
     if (isBgLoaded) {
-        // Vẽ ảnh background full màn hình
         ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
     } else {
-        // Fallback: màu nền nếu ảnh chưa tải
         ctx.fillStyle = '#03045e';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Giữ phần đáy nếu cần
         ctx.fillStyle = '#023e8a';
         ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
     }
     
-    // Đáy
     ctx.fillStyle = '#023e8a';
     ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
     
-    // Sóng
     ctx.beginPath();
     ctx.moveTo(0, canvas.height - 30);
     const now = Date.now() / 1000;
@@ -313,5 +388,5 @@ function drawBackground() {
     ctx.fill();
 }
 
-// Khởi động game khi DOM sẵn sàng
+// Khởi động game
 document.addEventListener('DOMContentLoaded', initGame);

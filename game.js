@@ -388,5 +388,6 @@ function drawBackground() {
     ctx.fill();
 }
 
-// Khởi động game
+// Khởi động game khi DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', initGame);
+>>>>>>> bd5040ee05152fc055ac1e9b9054214b9d1f2650:game.js

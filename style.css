@@ -136,27 +136,14 @@ body {
     color: #90e0ef;
     margin-bottom: 30px;
 }
-#mobile-controls {
-    display: none; /* Ẩn trên desktop */
+/* Ngăn hành vi mặc định trên mobile */
+#game-canvas {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
-@media screen and (max-width: 768px) {
-    #mobile-controls {
-        display: flex;
-        position: fixed;
-        bottom: 20px;
-        width: 100%;
-        justify-content: space-between;
-        padding: 0 20px;
-        z-index: 100;
-    }
-    
-    #jump-btn, .dir-btn {
-        padding: 15px 25px;
-        font-size: 18px;
-        background: rgba(0,0,0,0.5);
-        color: white;
-        border: 2px solid white;
-        border-radius: 50%;
-    }
+body {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }

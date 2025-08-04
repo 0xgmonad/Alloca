@@ -1,34 +1,17 @@
-// ==================== PHẦN THÊM MỚI ĐẦU FILE ====================
-// Kiểm tra thiết bị mobile
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-let canvasScale = 1; // Tỉ lệ scale canvas cho mobile
-
-// Biến điều khiển cảm ứng
-let touchStartX = 0;
-let touchStartY = 0;
-
-// ==================== PHẦN TẢI HÌNH ẢNH (GIỮ NGUYÊN) ====================
+// ========== TẢI HÌNH ẢNH ==========
 const logoImg = new Image();
 logoImg.src = 'images/logo.png';
 let isLogoLoaded = false;
-logoImg.onload = () => {
-    isLogoLoaded = true;
-    console.log('Logo loaded');
-};
+logoImg.onload = () => isLogoLoaded = true;
 logoImg.onerror = () => console.error('Error loading logo');
 
 const bgImage = new Image();
 bgImage.src = 'images/background.jpg';
 let isBgLoaded = false;
-bgImage.onload = function() {
-    isBgLoaded = true;
-    console.log('Ảnh background đã tải xong!');
-};
-bgImage.onerror = function() {
-    console.error('Không thể tải ảnh background!');
-};
+bgImage.onload = () => isBgLoaded = true;
+bgImage.onerror = () => console.error('Không thể tải ảnh background!');
 
-// ==================== PHẦN KHAI BÁO BIẾN (CẬP NHẬT) ====================
+// ========== KHAI BÁO BIẾN ==========
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
@@ -37,11 +20,6 @@ const restartBtn = document.getElementById('restart-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const playAgainBtn = document.getElementById('play-again-btn');
 const gameOverScreen = document.getElementById('game-over');
-
-// Thêm biến cho nút điều khiển mobile
-const jumpBtn = document.getElementById('jump-btn');
-const leftBtn = document.getElementById('left-btn');
-const rightBtn = document.getElementById('right-btn');
 
 // Tải ảnh nhân vật
 const characterImg = new Image();
@@ -56,7 +34,7 @@ let animationId;
 const gravity = 0.5;
 const obstacleSpeedBase = 3;
 
-// ==================== PHẦN NHÂN VẬT (CẬP NHẬT) ====================
+// ========== NHÂN VẬT ==========
 const player = {
     x: 100,
     y: canvas.height / 2,
@@ -65,10 +43,6 @@ const player = {
     jumpForce: -10,
     color: '#90e0ef',
     showWaterEffect: true,
-    moveLeft: false, // Thêm mới cho điều khiển mobile
-    moveRight: false, // Thêm mới cho điều khiển mobile
-    speedX: 0, // Thêm mới cho di chuyển ngang
-    maxSpeedX: 4, // Thêm mới cho di chuyển ngang
     
     draw() {
         if (!isImageLoaded) {
@@ -94,18 +68,9 @@ const player = {
     },
     
     update() {
-        // Vật lý nhân vật
         this.velocity += gravity;
         this.y += this.velocity;
         
-        // Di chuyển ngang (phần thêm mới cho mobile)
-        if (this.moveLeft) this.speedX = -this.maxSpeedX;
-        else if (this.moveRight) this.speedX = this.maxSpeedX;
-        else this.speedX = 0;
-        
-        this.x += this.speedX;
-        
-        // Giới hạn màn hình
         if (this.y + this.radius > canvas.height) {
             this.y = canvas.height - this.radius;
             gameOver();
@@ -114,10 +79,6 @@ const player = {
             this.y = this.radius;
             this.velocity = 0;
         }
-        
-        // Giới hạn màn hình ngang (phần thêm mới)
-        if (this.x - this.radius < 0) this.x = this.radius;
-        if (this.x + this.radius > canvas.width) this.x = canvas.width - this.radius;
     },
     
     jump() {
@@ -127,7 +88,7 @@ const player = {
     }
 };
 
-// ==================== PHẦN CHƯỚNG NGẠI VẬT (GIỮ NGUYÊN) ====================
+// ========== CHƯỚNG NGẠI VẬT ==========
 const obstacles = {
     list: [],
     width: 80,
@@ -208,98 +169,34 @@ const obstacles = {
     }
 };
 
-// ==================== PHẦN HỆ THỐNG GAME (CẬP NHẬT) ====================
+// ========== HỆ THỐNG GAME ==========
 function initGame() {
-    // Thêm sự kiện cho mobile (phần thêm mới)
-    if (isMobile) {
-        jumpBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            player.jump();
-        });
-        
-        leftBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            player.moveLeft = true;
-        });
-        
-        rightBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            player.moveRight = true;
-        });
-        
-        leftBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            player.moveLeft = false;
-        });
-        
-        rightBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            player.moveRight = false;
-        });
-        
-        canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, { passive: false });
-        
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touchEndX = e.touches[0].clientX;
-            const touchEndY = e.touches[0].clientY;
-            const dy = touchEndY - touchStartY;
-            
-            if (dy < -30) { // Swipe lên để nhảy
-                player.jump();
-            }
-        }, { passive: false });
-    }
+    characterImg.onload = () => isImageLoaded = true;
+    characterImg.onerror = () => console.error('Không tải được ảnh nhân vật');
     
-    // Sự kiện bàn phím (giữ nguyên)
+    // Sự kiện điều khiển PC
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Space') player.jump();
     });
     
-    // Các sự kiện khác (giữ nguyên)
+    // Sự kiện cho mobile: touch
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        player.jump();
+    });
+    
+    // Sự kiện click (dùng cho cả PC và mobile)
+    canvas.addEventListener('click', () => player.jump());
+    
+    // Sự kiện nút điều khiển
     restartBtn.addEventListener('click', startGame);
     pauseBtn.addEventListener('click', togglePause);
     playAgainBtn.addEventListener('click', startGame);
     
-    // Khởi tạo kích thước canvas (phần thêm mới)
-    resizeCanvas();
+    // Màn hình bắt đầu
     showStartScreen();
 }
 
-// ==================== PHẦN THÊM MỚI: RESIZE CANVAS ====================
-function resizeCanvas() {
-    const maxWidth = Math.min(window.innerWidth * 0.95, 600);
-    const maxHeight = Math.min(window.innerHeight * 0.7, 800);
-    
-    canvas.width = maxWidth;
-    canvas.height = maxHeight;
-    canvasScale = maxWidth / 600;
-    
-    // Điều chỉnh cho mobile
-    if (isMobile) {
-        player.radius = 30 * canvasScale;
-        player.jumpForce = -10 * canvasScale;
-        player.maxSpeedX = 4 * canvasScale;
-    }
-    
-    player.x = 100 * canvasScale;
-    player.y = canvas.height / 2;
-}
-
-// Thêm sự kiện resize window (phần thêm mới)
-window.addEventListener('resize', () => {
-    resizeCanvas();
-    if (gameRunning) {
-        obstacles.list.forEach(obstacle => {
-            obstacle.y = obstacle.y / canvas.height * canvas.height;
-        });
-    }
-});
-
-// ==================== CÁC HÀM GAME LOOP (GIỮ NGUYÊN) ====================
 function gameLoop() {
     if (!gameRunning || gamePaused) return;
     
@@ -324,8 +221,6 @@ function startGame() {
     obstacles.speed = obstacleSpeedBase;
     player.y = canvas.height / 2;
     player.velocity = 0;
-    player.moveLeft = false;
-    player.moveRight = false;
     
     scoreElement.textContent = score;
     gameOverScreen.style.display = 'none';
@@ -357,7 +252,7 @@ function togglePause() {
 function showStartScreen() {
     gameOverScreen.style.display = 'flex';
     document.querySelector('#game-over h2').textContent = "";
-    finalScoreElement.textContent = isMobile ? "TAP to JUMP" : "SPACE to JUMP";
+    finalScoreElement.textContent = "SPACE to JUMP";
     playAgainBtn.textContent = "Start Game";
 }
 
@@ -388,5 +283,5 @@ function drawBackground() {
     ctx.fill();
 }
 
-// Khởi động game khi DOM sẵn sàng
+// Khởi động game
 document.addEventListener('DOMContentLoaded', initGame);

@@ -64,55 +64,11 @@ body {
     border-radius: 10px;
 }
 
-#controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.game-btn {
-    padding: 12px 25px;
-    background: linear-gradient(to right, #00b4d8, #0077b6);
-    border: none;
-    border-radius: 30px;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.game-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    background: linear-gradient(to right, #0096c7, #005f8a);
-}
-
 #instructions {
     text-align: center;
     margin-top: 25px;
     padding: 0 20px;
     color: #caf0f8;
-}
-
-.liquid-character {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(to bottom, #90e0ef, #00b4d8);
-    border-radius: 50%;
-    box-shadow: 0 0 15px #0077b6;
-    z-index: 10;
-}
-
-.obstacle {
-    position: absolute;
-    width: 60px;
-    background: linear-gradient(to bottom, #e63946, #d00000);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(230, 57, 70, 0.7);
 }
 
 #game-over {
@@ -136,7 +92,7 @@ body {
     color: #90e0ef;
     margin-bottom: 30px;
 }
-/* Ngăn hành vi mặc định trên mobile */
+
 #game-canvas {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -147,37 +103,7 @@ body {
     user-select: none;
     -webkit-user-select: none;
 }
-/* ... (giữ nguyên các phần trước) ... */
 
-#game-container {
-    position: relative;
-    width: 100%;
-    max-width: 650px; /* Giới hạn chiều rộng tối đa */
-    height: auto; /* Thay đổi từ height cố định sang auto */
-    min-height: 100vh; /* Đảm bảo chiếm ít nhất toàn bộ chiều cao màn hình */
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    color: white;
-    padding: 15px; /* Thêm padding để không bị sát mép */
-    margin: 0 auto; /* Căn giữa container */
-    box-sizing: border-box;
-}
-
-#game-canvas {
-    display: block;
-    margin: 20px auto;
-    background: rgba(0, 20, 40, 0.6);
-    border: 2px solid #0077b6;
-    border-radius: 10px;
-    width: 100%; /* Chiếm toàn bộ chiều rộng của container */
-    height: auto; /* Chiều cao tự động */
-    max-height: 70vh; /* Giới hạn chiều cao tối đa */
-    aspect-ratio: 3/4; /* Giữ tỷ lệ 3:4 cho canvas */
-}
-
-/* Media queries cho mobile */
 @media (max-width: 768px) {
     body {
         padding: 10px;
@@ -209,22 +135,8 @@ body {
         font-size: 16px;
     }
     
-    #controls {
-        flex-wrap: wrap; /* Cho phép các nút xuống dòng nếu cần */
-        gap: 10px;
-        margin-top: 10px;
-    }
-    
-    .game-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-        flex: 1; /* Các nút chiếm đều không gian */
-        min-width: 120px; /* Đảm bảo nút không quá nhỏ */
-    }
-    
     #instructions {
-        margin-top: 15px;
-        font-size: 14px;
+        display: none;
     }
     
     #game-over {
@@ -235,56 +147,7 @@ body {
     #final-score {
         font-size: 36px;
     }
-}
-
-/* Ngăn hành vi mặc định trên mobile */
-#game-canvas {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-}
-/* ... (giữ nguyên phần trước) ... */
-
-/* Media queries cho mobile */
-@media (max-width: 768px) {
-    /* Ẩn nút Start Again và Pause */
-    #controls {
-        display: none;
-    }
     
-    /* Tăng không gian cho canvas */
-    #game-canvas {
-        max-height: 80vh;
-        margin: 10px auto;
-    }
-    
-    /* Điều chỉnh màn hình game over/start game */
-    #game-over {
-        padding: 20px;
-    }
-    
-    #game-over h2 {
-        font-size: 32px;
-        margin-bottom: 15px;
-    }
-    
-    #final-score {
-        font-size: 24px;
-        margin-bottom: 20px;
-        padding: 10px 20px;
-    }
-    
-    #play-again-btn {
-        padding: 10px 20px;
-        font-size: 16px;
-    }
-    
-    /* Hiển thị hướng dẫn mobile */
     #mobile-instructions {
         display: block;
         margin-top: 10px;
@@ -294,5 +157,3 @@ body {
         font-size: 16px;
     }
 }
-
-/* ... (giữ nguyên phần sau) ... */

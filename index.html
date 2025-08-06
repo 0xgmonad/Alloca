@@ -3,7 +3,7 @@
 <head>
     <link rel="preload" href="images/background.jpg" as="image">
     <meta charset="UTF-8">
-    <!-- Bổ sung viewport cho mobile -->
+    <!-- Cập nhật viewport cho mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="SPACE TO JUMP">
     <title>ALLOCA</title>
@@ -12,27 +12,15 @@
     <link rel="preload" href="images/logo.png" as="image">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS bổ sung chỉ dành cho mobile - không ảnh hưởng PC */
+        /* CSS riêng cho hướng dẫn mobile */
         @media (max-width: 768px) {
-            body {
-                touch-action: manipulation;
-                -webkit-tap-highlight-color: transparent;
-                overflow: hidden;
-                position: fixed;
-                width: 100%;
-            }
-            
-            #game-canvas {
-                touch-action: manipulation;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
             #mobile-instructions {
                 display: block;
                 margin-top: 10px;
                 color: #90e0ef;
                 font-weight: bold;
                 text-align: center;
+                font-size: 16px;
             }
         }
         
@@ -58,12 +46,11 @@
             <button id="pause-btn" class="game-btn">Pause</button>
         </div>
         
-        <!-- Hướng dẫn PC (giữ nguyên) -->
         <div id="instructions">
             Press <span style="color:#90e0ef; font-weight:bold">SPACEBAR</span> to jump over obstacles
         </div>
         
-        <!-- Bổ sung hướng dẫn riêng cho mobile -->
+        <!-- Hướng dẫn riêng cho mobile -->
         <div id="mobile-instructions">
             TOUCH anywhere to JUMP!
         </div>

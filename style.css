@@ -147,3 +147,104 @@ body {
     user-select: none;
     -webkit-user-select: none;
 }
+/* ... (giữ nguyên các phần trước) ... */
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 650px; /* Giới hạn chiều rộng tối đa */
+    height: auto; /* Thay đổi từ height cố định sang auto */
+    min-height: 100vh; /* Đảm bảo chiếm ít nhất toàn bộ chiều cao màn hình */
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    color: white;
+    padding: 15px; /* Thêm padding để không bị sát mép */
+    margin: 0 auto; /* Căn giữa container */
+    box-sizing: border-box;
+}
+
+#game-canvas {
+    display: block;
+    margin: 20px auto;
+    background: rgba(0, 20, 40, 0.6);
+    border: 2px solid #0077b6;
+    border-radius: 10px;
+    width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+    height: auto; /* Chiều cao tự động */
+    max-height: 70vh; /* Giới hạn chiều cao tối đa */
+    aspect-ratio: 3/4; /* Giữ tỷ lệ 3:4 cho canvas */
+}
+
+/* Media queries cho mobile */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        min-height: 100vh;
+        display: block;
+        overflow: auto;
+    }
+    
+    #game-container {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        min-height: 100vh;
+        border-radius: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    
+    #game-header {
+        padding: 10px;
+    }
+    
+    #game-title {
+        font-size: 24px;
+        margin-top: 15px;
+    }
+    
+    #subtitle {
+        font-size: 16px;
+    }
+    
+    #controls {
+        flex-wrap: wrap; /* Cho phép các nút xuống dòng nếu cần */
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .game-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        flex: 1; /* Các nút chiếm đều không gian */
+        min-width: 120px; /* Đảm bảo nút không quá nhỏ */
+    }
+    
+    #instructions {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+    
+    #game-over {
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    #final-score {
+        font-size: 36px;
+    }
+}
+
+/* Ngăn hành vi mặc định trên mobile */
+#game-canvas {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}

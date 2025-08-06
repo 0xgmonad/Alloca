@@ -11,6 +11,7 @@
     <link rel="preload" href="images/logo.png" as="image">
     <link rel="stylesheet" href="style.css">
     <style>
+        /* CSS cho nút Play Again */
         #play-again-btn {
             padding: 12px 25px;
             background: linear-gradient(to right, #00b4d8, #0077b6);
@@ -30,6 +31,7 @@
             background: linear-gradient(to right, #0096c7, #005f8a);
         }
         
+        /* Ẩn hướng dẫn mobile trên PC */
         #mobile-instructions {
             display: none;
         }
@@ -46,10 +48,18 @@
         
         <canvas id="game-canvas" width="600" height="800"></canvas>
         
+        <!-- Controls sẽ bị ẩn trên mobile -->
+        <div id="controls">
+            <button id="restart-btn" class="game-btn">Start Again</button>
+            <button id="pause-btn" class="game-btn">Pause</button>
+        </div>
+        
+        <!-- Hướng dẫn PC (giữ nguyên) -->
         <div id="instructions">
             Press <span style="color:#90e0ef; font-weight:bold">SPACEBAR</span> to jump over obstacles
         </div>
         
+        <!-- Hướng dẫn riêng cho mobile -->
         <div id="mobile-instructions">
             TOUCH anywhere to JUMP!
         </div>
@@ -57,7 +67,7 @@
         <div id="game-over">
             <h2>GAME OVER</h2>
             <div id="final-score">Score: 0</div>
-            <button id="play-again-btn">Play Again</button>
+            <button id="play-again-btn" class="game-btn">Play Again</button>
         </div>
     </div>
 

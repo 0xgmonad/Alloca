@@ -16,6 +16,8 @@ const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const finalScoreElement = document.getElementById('final-score');
+const restartBtn = document.getElementById('restart-btn');
+const pauseBtn = document.getElementById('pause-btn');
 const playAgainBtn = document.getElementById('play-again-btn');
 const gameOverScreen = document.getElementById('game-over');
 
@@ -30,7 +32,7 @@ let gameRunning = false;
 let gamePaused = false;
 let animationId;
 const gravity = 0.5;
-const obstacleSpeedBase = 3;
+const obstacleSpeedBase = 3.75;
 
 // ========== NHÂN VẬT ==========
 const player = {
@@ -186,7 +188,9 @@ function initGame() {
     // Sự kiện click (dùng cho cả PC và mobile)
     canvas.addEventListener('click', () => player.jump());
     
-    // Sự kiện nút Play Again
+    // Sự kiện nút điều khiển
+    restartBtn.addEventListener('click', startGame);
+    pauseBtn.addEventListener('click', togglePause);
     playAgainBtn.addEventListener('click', startGame);
     
     // Màn hình bắt đầu
@@ -222,6 +226,7 @@ function startGame() {
     gameOverScreen.style.display = 'none';
     gameRunning = true;
     gamePaused = false;
+    pauseBtn.textContent = "Pause";
     
     animationId = requestAnimationFrame(gameLoop);
 }
@@ -231,6 +236,17 @@ function gameOver() {
     cancelAnimationFrame(animationId);
     finalScoreElement.textContent = `Score: ${score}`;
     gameOverScreen.style.display = 'flex';
+}
+
+function togglePause() {
+    if (!gameRunning) return;
+    
+    gamePaused = !gamePaused;
+    pauseBtn.textContent = gamePaused ? "Resume" : "Pause";
+    
+    if (!gamePaused) {
+        animationId = requestAnimationFrame(gameLoop);
+    }
 }
 
 function showStartScreen() {

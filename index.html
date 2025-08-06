@@ -3,7 +3,6 @@
 <head>
     <link rel="preload" href="images/background.jpg" as="image">
     <meta charset="UTF-8">
-    <!-- Cập nhật viewport cho mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="SPACE TO JUMP">
     <title>ALLOCA</title>
@@ -12,16 +11,24 @@
     <link rel="preload" href="images/logo.png" as="image">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS riêng cho hướng dẫn mobile */
-        @media (max-width: 768px) {
-            #mobile-instructions {
-                display: block;
-                margin-top: 10px;
-                color: #90e0ef;
-                font-weight: bold;
-                text-align: center;
-                font-size: 16px;
-            }
+        /* CSS cho nút Play Again */
+        #play-again-btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #00b4d8, #0077b6);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        #play-again-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #0096c7, #005f8a);
         }
         
         /* Ẩn hướng dẫn mobile trên PC */
@@ -41,11 +48,13 @@
         
         <canvas id="game-canvas" width="600" height="800"></canvas>
         
+        <!-- Controls sẽ bị ẩn trên mobile -->
         <div id="controls">
             <button id="restart-btn" class="game-btn">Start Again</button>
             <button id="pause-btn" class="game-btn">Pause</button>
         </div>
         
+        <!-- Hướng dẫn PC (giữ nguyên) -->
         <div id="instructions">
             Press <span style="color:#90e0ef; font-weight:bold">SPACEBAR</span> to jump over obstacles
         </div>

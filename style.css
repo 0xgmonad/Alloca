@@ -248,3 +248,51 @@ body {
     user-select: none;
     -webkit-user-select: none;
 }
+/* ... (giữ nguyên phần trước) ... */
+
+/* Media queries cho mobile */
+@media (max-width: 768px) {
+    /* Ẩn nút Start Again và Pause */
+    #controls {
+        display: none;
+    }
+    
+    /* Tăng không gian cho canvas */
+    #game-canvas {
+        max-height: 80vh;
+        margin: 10px auto;
+    }
+    
+    /* Điều chỉnh màn hình game over/start game */
+    #game-over {
+        padding: 20px;
+    }
+    
+    #game-over h2 {
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+    
+    #final-score {
+        font-size: 24px;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+    }
+    
+    #play-again-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    
+    /* Hiển thị hướng dẫn mobile */
+    #mobile-instructions {
+        display: block;
+        margin-top: 10px;
+        color: #90e0ef;
+        font-weight: bold;
+        text-align: center;
+        font-size: 16px;
+    }
+}
+
+/* ... (giữ nguyên phần sau) ... */
